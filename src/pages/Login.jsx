@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import styled from "styled-components";
@@ -6,14 +6,19 @@ import Loader from "../components/Loader";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
-  const { login, loading, error } = useAppContext();
+  const { login, loading, error, user } = useAppContext();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login(credentials);
-    navigate("/");
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user]);
 
   return (
     <LoginWrapper>
@@ -43,6 +48,10 @@ const Login = () => {
         <Button type="submit" disabled={loading}>
           {loading ? <Loader /> : "Login"}
         </Button>
+        <SignupPrompt>
+          Don't have an account yet?{" "}
+          <SignupLink href="/signup">Sign up</SignupLink>
+        </SignupPrompt>
       </Form>
     </LoginWrapper>
   );
@@ -86,6 +95,22 @@ const Button = styled.button`
 const Error = styled.div`
   color: ${({ theme }) => theme.error};
   margin-bottom: 1rem;
+`;
+
+const SignupPrompt = styled.div`
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #666;
+`;
+
+const SignupLink = styled.a`
+  color: ${({ theme }) => theme.primary};
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 export default Login;

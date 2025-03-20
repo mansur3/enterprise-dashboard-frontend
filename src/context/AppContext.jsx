@@ -1,4 +1,5 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
+import AxiosInterceptor from "../config/axiosInterceptor";
 
 const AppContext = createContext();
 
@@ -8,12 +9,63 @@ export const AppProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      setUser(JSON.parse(user));
+    }
+  }, []);
+
   const login = async (credentials) => {
     try {
       setLoading(true);
-      // Mock API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setUser({ name: "Admin", role: "admin" });
+      const body = {
+        email: credentials.email,
+        password: credentials.password,
+      };
+      const profile = await AxiosInterceptor.post(
+        "http://localhost:2233/api/auth/login",
+        body
+      );
+
+      if (profile?.status == 200) {
+        setUser(profile?.data?.data);
+        localStorage.setItem("user", JSON.stringify(profile?.data?.data));
+        setError(null);
+      } else {
+        setUser(null);
+        setError(profile?.message);
+      }
+      // setUser({ name: "Admin", role: "admin" });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signup = async (data) => {
+    console.log(data);
+    try {
+      setLoading(true);
+      const body = {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      };
+      const profile = await AxiosInterceptor.post(
+        "http://localhost:2233/api/auth/profile",
+        body
+      );
+
+      if (profile?.status == 201) {
+        setUser(profile?.data?.data);
+        localStorage.setItem("user", JSON.stringify(profile?.data?.data));
+        setError(null);
+      } else {
+        setUser(null);
+        setError(profile?.message);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -23,6 +75,8 @@ export const AppProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    setError(null);
+    localStorage.removeItem("user");
   };
 
   return (
@@ -33,6 +87,7 @@ export const AppProvider = ({ children }) => {
         error,
         sidebarOpen,
         setSidebarOpen,
+        signup,
         login,
         logout,
       }}>

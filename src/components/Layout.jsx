@@ -2,9 +2,10 @@ import styled from "styled-components";
 import { useAppContext } from "../context/AppContext";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 const Layout = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { sidebarOpen, user } = useAppContext();
 
@@ -13,6 +14,9 @@ const Layout = () => {
       navigate("/login");
     }
   }, [user]);
+  console.log(user);
+
+  console.log("useLocation", location.pathname);
 
   return (
     <Wrapper>

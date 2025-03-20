@@ -1,1 +1,6 @@
-export { handleCreateUserData } from "./users";
+export {
+  handleCreateUserData,
+  handleGetUserData,
+  handleUpdateUserData,
+  handleDeleteUserData,
+} from "./users";

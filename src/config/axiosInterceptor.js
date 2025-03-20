@@ -1,9 +1,13 @@
 import axios from "axios";
 
-const baseUrl = process.env.BACKEND_BASE_URL;
+const baseUrl = process.env.REACT_APP_BACKEND_BASE_URL;
 
 const instance = axios.create({
-  baseURL: baseUrl,
+  // baseURL: baseUrl,
+  baseURL: "http://localhost:2233/api/v1",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 // instance.defaults.baseURL = baseUrl;
 

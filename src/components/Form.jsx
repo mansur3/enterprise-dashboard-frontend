@@ -1,15 +1,25 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 
-const UserForm = ({ onSubmit }) => {
+const UserForm = ({ onSubmit, initialData, onCancel }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
+  useEffect(() => {
+    reset(initialData || { name: "", email: "" });
+  }, [initialData, reset]);
+
+  const handleFormSubmit = (data) => {
+    onSubmit(data);
+  };
+
   return (
-    <FormWrapper onSubmit={handleSubmit(onSubmit)}>
+    <FormWrapper onSubmit={handleSubmit(handleFormSubmit)}>
       <FormGroup>
         <Label>Name</Label>
         <Input
@@ -34,8 +44,24 @@ const UserForm = ({ onSubmit }) => {
         />
         {errors.email && <Error>{errors.email.message}</Error>}
       </FormGroup>
+      <ButtonsContainer>
+        <SubmitButton type="submit">
+          {initialData ? "Update User" : "Save User"}
+        </SubmitButton>
+        <ResetButton type="button" onClick={() => reset()}>
+          Reset Form
+        </ResetButton>
+        {initialData && (
+          <CancelButton type="button" onClick={onCancel}>
+            Cancel Edit
+          </CancelButton>
+        )}
+      </ButtonsContainer>
 
-      <SubmitButton type="submit">Save User</SubmitButton>
+      {/* <SubmitButton type="submit">Save User</SubmitButton>
+      <ResetButton type="button" onClick={() => reset()}>
+        Reset Form
+      </ResetButton> */}
     </FormWrapper>
   );
 };
@@ -67,11 +93,34 @@ const Error = styled.span`
   color: ${({ theme }) => theme.error};
   font-size: 0.875rem;
 `;
+const ButtonsContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+`;
 
 const SubmitButton = styled.button`
   background: ${({ theme }) => theme.primary};
   color: white;
-  padding: 1rem 2rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+`;
+
+const ResetButton = styled.button`
+  background: ${({ theme }) => theme.secondary};
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+`;
+
+const CancelButton = styled.button`
+  background: ${({ theme }) => theme.error};
+  color: white;
+  padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;

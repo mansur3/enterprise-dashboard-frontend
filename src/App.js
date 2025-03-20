@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
+import Signup from "./pages/SignUP";
 import { lightTheme } from "./styles/theme";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route element={<Layout />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/users" element={<Users />} />

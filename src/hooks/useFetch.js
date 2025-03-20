@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import AxiosInterceptor from "../config/axiosInterceptor";
 
 const useFetch = (url) => {
   const [data, setData] = useState(null);
@@ -9,7 +10,7 @@ const useFetch = (url) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(url);
+        const response = await AxiosInterceptor.get(url);
         setData(response.data?.data);
       } catch (err) {
         setError(err.message);

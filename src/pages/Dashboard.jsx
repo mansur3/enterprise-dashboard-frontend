@@ -132,7 +132,7 @@ const Dashboard = () => {
       {/* Sales Overview Widget */}
       <Widget title="Sales Overview (Last 6 Months)">
         <BarChart width={500} height={300} data={salesData}>
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="2 2" />
           <XAxis dataKey="month" />
           <YAxis />
           <Tooltip />
