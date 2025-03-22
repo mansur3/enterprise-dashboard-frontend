@@ -30,6 +30,7 @@ export const AppProvider = ({ children }) => {
 
       if (profile?.status == 200) {
         setUser(profile?.data?.data);
+        sessionStorage.setItem("token", profile?.data?.data?.token);
         localStorage.setItem("user", JSON.stringify(profile?.data?.data));
         setError(null);
       } else {
@@ -45,7 +46,6 @@ export const AppProvider = ({ children }) => {
   };
 
   const signup = async (data) => {
-    console.log(data);
     try {
       setLoading(true);
       const body = {
@@ -60,6 +60,7 @@ export const AppProvider = ({ children }) => {
 
       if (profile?.status == 201) {
         setUser(profile?.data?.data);
+        sessionStorage.setItem("token", profile?.data?.data?.token);
         localStorage.setItem("user", JSON.stringify(profile?.data?.data));
         setError(null);
       } else {

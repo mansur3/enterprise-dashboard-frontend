@@ -1,75 +1,4 @@
-// import styled from "styled-components";
-// import {
-//   BarChart,
-//   PieChart,
-//   LineChart,
-//   Bar,
-//   Pie,
-//   Line,
-//   XAxis,
-//   YAxis,
-//   CartesianGrid,
-//   Tooltip,
-//   Legend,
-// } from "recharts";
-// import Widget from "../components/Widget";
-// import useFetch from "../hooks/useFetch";
-
-// const Dashboard = () => {
-//   const { data, loading, error } = useFetch("/api/dashboard");
-
-//   const salesData = [
-//     { month: "Jan", sales: 4000 },
-//     { month: "Feb", sales: 3000 },
-//     // ... more data
-//   ];
-
-//   return (
-//     <DashboardGrid>
-//       <Widget title="Sales Overview">
-//         <BarChart width={500} height={300} data={salesData}>
-//           <CartesianGrid strokeDasharray="3 3" />
-//           <XAxis dataKey="month" />
-//           <YAxis />
-//           <Tooltip />
-//           <Legend />
-//           <Bar dataKey="sales" fill="#8884d8" />
-//         </BarChart>
-//       </Widget>
-
-//       <Widget title="User Activity">
-//         <LineChart width={500} height={300} data={data?.activity}>
-//           {/* Similar chart structure */}
-//         </LineChart>
-//       </Widget>
-
-//       <Widget title="Category Distribution">
-//         <PieChart width={500} height={300}>
-//           <Pie
-//             data={data?.categories}
-//             dataKey="value"
-//             nameKey="name"
-//             cx="50%"
-//             cy="50%"
-//             outerRadius={80}
-//           />
-//         </PieChart>
-//       </Widget>
-//     </DashboardGrid>
-//   );
-// };
-
-// const DashboardGrid = styled.div`
-//   display: grid;
-//   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-//   gap: 2rem;
-//   padding: 1rem;
-// `;
-
-// export default Dashboard;
-
-// src/pages/Dashboard.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import {
   BarChart,
@@ -86,6 +15,7 @@ import {
   Cell,
 } from "recharts";
 import Widget from "../components/Widget";
+import { handleGetSalesData, handleGetUserActivity } from "../services/index";
 
 // Dummy data for demonstration
 const salesData = [
@@ -95,23 +25,6 @@ const salesData = [
   { month: "Apr", sales: 2780 },
   { month: "May", sales: 1890 },
   { month: "Jun", sales: 2390 },
-];
-
-const userActivityData = [
-  { id: 1, user: "John Doe", action: "Login", timestamp: "2024-03-01 09:30" },
-  {
-    id: 2,
-    user: "Alice Smith",
-    action: "Updated Profile",
-    timestamp: "2024-03-01 10:15",
-  },
-  {
-    id: 3,
-    user: "Bob Wilson",
-    action: "Created Order",
-    timestamp: "2024-03-01 11:45",
-  },
-  { id: 4, user: "Emma Davis", action: "Login", timestamp: "2024-03-01 14:20" },
 ];
 
 const categoryData = [
@@ -125,19 +38,30 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const Dashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  console.log("Welcome to the world");
+  const [salesData, setSalesData] = useState([]);
+  const [userActivityData, setUserActivityData] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const sales = await handleGetSalesData();
+      const userActivity = await handleGetUserActivity();
+      setSalesData(sales?.data ?? []);
+      setUserActivityData(userActivity?.data ?? []);
+    }
+    fetchData();
+  }, []);
 
   return (
     <DashboardGrid>
       {/* Sales Overview Widget */}
       <Widget title="Sales Overview (Last 6 Months)">
-        <BarChart width={500} height={300} data={salesData}>
-          <CartesianGrid strokeDasharray="2 2" />
-          <XAxis dataKey="month" />
+        <BarChart width={400} height={300} data={salesData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="car" />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="sales" fill="#8884d8" />
+          <Bar dataKey="total_car" fill="#8884d8" barSize={25} />
         </BarChart>
       </Widget>
 
@@ -152,13 +76,14 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {userActivityData.map((activity) => (
-              <tr key={activity.id}>
-                <td>{activity.user}</td>
-                <td>{activity.action}</td>
-                <td>{activity.timestamp}</td>
-              </tr>
-            ))}
+            {userActivityData?.length > 0 &&
+              userActivityData.map((activity) => (
+                <tr key={activity.id}>
+                  <td>{activity.username}</td>
+                  <td>{activity.activity}</td>
+                  <td>{activity.createdAt}</td>
+                </tr>
+              ))}
           </tbody>
         </UserActivityTable>
       </Widget>

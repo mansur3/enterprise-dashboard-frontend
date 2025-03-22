@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 const Widget = ({ title, children }) => {
-  console.log("Welcome to the world widtget");
   return (
     <WidgetWrapper>
       <WidgetTitle>{title}</WidgetTitle>

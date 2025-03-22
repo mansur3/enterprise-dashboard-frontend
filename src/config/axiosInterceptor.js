@@ -4,7 +4,7 @@ const baseUrl = process.env.REACT_APP_BACKEND_BASE_URL;
 
 const instance = axios.create({
   // baseURL: baseUrl,
-  baseURL: "http://localhost:2233/api/v1",
+  baseURL: "http://localhost:2233/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -13,6 +13,10 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   function (config) {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     // Do something before request is sent
     return config;
   },

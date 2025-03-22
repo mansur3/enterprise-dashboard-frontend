@@ -8,9 +8,10 @@ import {
   handleDeleteUserData,
 } from "../services/index";
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 const Users = () => {
-  const { data: users, loading, error } = useFetch("/users");
+  const { data: users, loading, error } = useFetch("/v1/users");
 
   const [usersList, setUserList] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
@@ -38,14 +39,15 @@ const Users = () => {
         email: userData.email,
       };
       if (editingUser) {
-        data = await handleUpdateUserData(`/users/${editingUser.id}`, body);
+        data = await handleUpdateUserData(`/v1/users/${editingUser.id}`, body);
+        toast.success("User updated successfully!");
       } else {
-        data = await handleCreateUserData("/users", body);
+        data = await handleCreateUserData("/v1/users", body);
+        toast.success("User created successfully!");
       }
 
       if (data?.data) {
-        const getUsers = await handleGetUserData("/users");
-        console.log(data, getUsers);
+        const getUsers = await handleGetUserData("/v1/users");
         setUserList(getUsers?.data ?? []);
         setEditingUser(null);
       }
@@ -56,8 +58,10 @@ const Users = () => {
 
   const handleDelete = async (userId) => {
     try {
-      await handleDeleteUserData(`/users/${userId}`);
-      const getUsers = await handleGetUserData("/users");
+      await handleDeleteUserData(`/v1/users/${userId}`);
+      toast.success("User deleted successfully!");
+
+      const getUsers = await handleGetUserData("/v1/users");
       setUserList(getUsers?.data ?? []);
     } catch (err) {
       console.error(err);
@@ -128,6 +132,7 @@ const Users = () => {
           </select>
         </PaginationContainer>
       )}
+      <ToastContainer />
     </UsersContainer>
   );
 };
