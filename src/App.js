@@ -15,7 +15,7 @@ function App() {
       <AppProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/login" element={<Login />} />
+            <Route index path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route element={<Layout />}>
               <Route path="/" element={<Dashboard />} />

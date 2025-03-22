@@ -135,9 +135,9 @@ const Input = styled.input`
 
 const Button = styled.button`
   width: 100%;
-  padding: 1rem;
+  padding: ${({ disabled }) => (disabled ? "0" : "1rem")};
+  background: ${({ theme, disabled }) => (disabled ? "" : theme.primary)};
   margin-top: 1rem;
-  background: ${({ theme }) => theme.primary};
   color: white;
   border: none;
   border-radius: 4px;

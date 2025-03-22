@@ -1,10 +1,13 @@
 import AxiosInterceptor from "../config/axiosInterceptor";
+import { toast } from "react-toastify";
 
 const handleCreateUserData = async (url, data) => {
   try {
     const response = await AxiosInterceptor.post(url, data);
     return response.data;
   } catch (error) {
+    toast.error(error.response.data.message);
+
     throw new Error(error.response.data.message);
   }
 };

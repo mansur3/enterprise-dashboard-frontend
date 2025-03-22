@@ -68,7 +68,12 @@ export const AppProvider = ({ children }) => {
         setError(profile?.message);
       }
     } catch (err) {
-      setError(err.message);
+      console.log("error", err);
+      if (err.status == 400) {
+        setError("Email already exists.");
+      } else {
+        setError(err.message);
+      }
     } finally {
       setLoading(false);
     }

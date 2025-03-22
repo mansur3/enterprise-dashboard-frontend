@@ -14,9 +14,6 @@ const Layout = () => {
       navigate("/login");
     }
   }, [user]);
-  console.log(user);
-
-  console.log("useLocation", location.pathname);
 
   return (
     <Wrapper>

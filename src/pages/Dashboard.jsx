@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import Widget from "../components/Widget";
 import { handleGetSalesData, handleGetUserActivity } from "../services/index";
+import { useNavigate } from "react-router-dom";
 
 // Dummy data for demonstration
 const salesData = [
@@ -37,18 +38,26 @@ const categoryData = [
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(0);
   const [salesData, setSalesData] = useState([]);
   const [userActivityData, setUserActivityData] = useState([]);
 
   useEffect(() => {
-    async function fetchData() {
-      const sales = await handleGetSalesData();
-      const userActivity = await handleGetUserActivity();
-      setSalesData(sales?.data ?? []);
-      setUserActivityData(userActivity?.data ?? []);
+    const userData = sessionStorage.getItem("token");
+    if (!userData) {
+      navigate("/login");
+    } else {
+      {
+        async function fetchData() {
+          const sales = await handleGetSalesData();
+          const userActivity = await handleGetUserActivity();
+          setSalesData(sales?.data ?? []);
+          setUserActivityData(userActivity?.data ?? []);
+        }
+        fetchData();
+      }
     }
-    fetchData();
   }, []);
 
   return (
